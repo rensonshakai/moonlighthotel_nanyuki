@@ -1,0 +1,124 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<!-- About Page Top Banner Carousel -->
+<div class="relative h-[60vh] mt-20 flex items-center justify-center bg-moonlight-dark overflow-hidden">
+    <div class="absolute inset-0 w-full h-full" id="hero-carousel">
+        {% for img in hero_images %}
+            <img src="{{ img.image.url }}" alt="Hotel Image" 
+                 class="hero-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out">
+        {% empty %}
+            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+                 class="hero-slide absolute inset-0 w-full h-full object-cover opacity-50">
+        {% endfor %}
+    </div>
+    <div class="absolute inset-0 bg-black opacity-40 z-10"></div>
+    <div class="relative z-20 text-center px-4">
+        <h1 class="text-5xl md:text-6xl text-white font-bold drop-shadow-lg font-serif">Our Story</h1>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="bg-moonlight-cream py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <h1 class="text-4xl font-bold text-moonlight-teal mb-6 font-serif">Founded in 2024</h1>
+                <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                    Moonlight Hotel was born from a simple vision: to create a sanctuary where luxury meets tranquility. Nestled in the heart of Nanyuki, our hotel offers a unique escape from the bustling world outside, with breathtaking views of Mt. Kenya.
+                </p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                    We believe that every guest deserves an unforgettable experience. From the moment you step into our grand lobby, our dedicated team is committed to providing world-class hospitality that feels personal and warm.
+                </p>
+                <div class="flex gap-12">
+                    <div>
+                        <h4 class="text-4xl font-bold text-moonlight-teal">10+</h4>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider mt-1">Years of Excellence</p>
+                    </div>
+                    <div>
+                        <h4 class="text-4xl font-bold text-moonlight-teal">50k+</h4>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider mt-1">Happy Guests</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SIDE CAROUSEL SECTION -->
+            <div class="md:w-1/2">
+                <div class="relative h-[400px] rounded-2xl shadow-2xl overflow-hidden bg-gray-200">
+                    {% if about_carousel_images %}
+                        {% for img in about_carousel_images %}
+                            <img src="{{ img.image.url }}" alt="About Moonlight Hotel" 
+                                 class="about-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out">
+                        {% endfor %}
+                    {% else %}
+                        <!-- Fallback if you haven't uploaded images yet -->
+                        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             class="absolute inset-0 w-full h-full object-cover">
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="mt-24">
+            <h2 class="text-3xl font-bold text-center text-moonlight-teal mb-12 font-serif">Our Core Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="p-8 bg-white rounded-xl shadow-sm border border-teal-100 hover:shadow-md transition">
+                    <div class="text-5xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Hospitality</h3>
+                    <p class="text-gray-600">We treat every guest like family, ensuring your comfort is our top priority.</p>
+                </div>
+                <div class="p-8 bg-white rounded-xl shadow-sm border border-teal-100 hover:shadow-md transition">
+                    <div class="text-5xl mb-4">✨</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Excellence</h3>
+                    <p class="text-gray-600">We strive for perfection in every detail, from our rooms to our service.</p>
+                </div>
+                <div class="p-8 bg-white rounded-xl shadow-sm border border-teal-100 hover:shadow-md transition">
+                    <div class="text-5xl mb-4">🌱</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Sustainability</h3>
+                    <p class="text-gray-600">We are committed to eco-friendly practices to protect our beautiful planet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // --- TOP BANNER CAROUSEL ---
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        if (heroSlides.length > 0) {
+            let currentHero = 0;
+            heroSlides[0].classList.remove('opacity-0');
+            heroSlides[0].classList.add('opacity-50'); 
+            
+            setInterval(() => {
+                heroSlides[currentHero].classList.remove('opacity-50');
+                heroSlides[currentHero].classList.add('opacity-0');
+                currentHero = (currentHero + 1) % heroSlides.length;
+                heroSlides[currentHero].classList.remove('opacity-0');
+                heroSlides[currentHero].classList.add('opacity-50');
+            }, 5000); 
+        }
+
+        // --- SIDE CAROUSEL ---
+        const aboutSlides = document.querySelectorAll('.about-slide');
+        if (aboutSlides.length > 0) {
+            let currentAbout = 0;
+            aboutSlides[0].classList.remove('opacity-0');
+            aboutSlides[0].classList.add('opacity-100');
+            
+            setInterval(() => {
+                aboutSlides[currentAbout].classList.remove('opacity-100');
+                aboutSlides[currentAbout].classList.add('opacity-0');
+                currentAbout = (currentAbout + 1) % aboutSlides.length;
+                aboutSlides[currentAbout].classList.remove('opacity-0');
+                aboutSlides[currentAbout].classList.add('opacity-100');
+            }, 4000); // Changes slightly faster (4 seconds)
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<!-- Hero Carousel Section -->
+<div class="relative h-screen flex items-center justify-center bg-moonlight-dark overflow-hidden">
+    
+    <!-- Carousel Images -->
+    <div class="absolute inset-0 w-full h-full" id="hero-carousel">
+        {% for img in hero_images %}
+            <img src="{{ img.image.url }}" alt="Hero Image" 
+                 class="carousel-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out">
+        {% empty %}
+            <!-- Fallback if no images are uploaded in admin -->
+            <img src="https://images.unsplash.com/photo-1542314831-c6a4d1424be7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+                 class="carousel-slide absolute inset-0 w-full h-full object-cover opacity-50">
+        {% endfor %}
+    </div>
+
+    <!-- Dark Overlay for Text Readability -->
+    <div class="absolute inset-0 bg-black opacity-40 z-10"></div>
+    
+    <!-- Hero Text -->
+    <div class="relative z-20 text-center px-4 mt-20">
+        <h1 class="text-5xl md:text-7xl text-white font-bold mb-6 drop-shadow-lg font-serif">Experience Luxury <br><span class="text-moonlight-gold">Under the Stars</span></h1>
+        <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto drop-shadow">Book your stay at the Moonlight Hotel and enjoy world-class hospitality in the heart of the city.</p>
+        <a href="{% url 'room_list' %}" class="bg-moonlight-gold text-moonlight-dark px-8 py-4 rounded-full text-lg font-bold hover:bg-white transition duration-300 shadow-xl">Book Your Stay</a>
+    </div>
+</div>
+
+<!-- Featured Rooms (Dynamic) -->
+<div class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-moonlight-dark mb-4 font-serif">Featured Rooms</h2>
+            <div class="w-24 h-1 bg-moonlight-gold mx-auto"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for room in featured_rooms %}
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group border border-gray-100 hover:shadow-2xl transition duration-300">
+                <div class="h-64 overflow-hidden relative">
+                    {% if room.image %}
+                        <img src="{{ room.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    {% elif "Single" in room.get_room_type_display %}
+                        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    {% elif "Double" in room.get_room_type_display %}
+                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    {% endif %}
+                    
+                    <div class="absolute top-4 right-4 bg-moonlight-dark text-white font-bold px-4 py-2 rounded-full shadow-lg">
+                        Ksh {{ room.price_per_night }}<span class="text-xs font-normal">/nt</span>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-gray-900 font-serif">Room {{ room.room_number }}</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">{{ room.get_room_type_display }} Room</p>
+                    <a href="{% url 'room_detail' room.id %}" class="block text-center w-full border-2 border-moonlight-dark text-moonlight-dark font-bold py-3 rounded-lg hover:bg-moonlight-dark hover:text-white transition">View Details</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
+                <p class="text-gray-500 text-lg">No rooms added yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript for Carousel Auto-Scroll -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        if (slides.length > 0) {
+            let currentSlide = 0;
+            
+            // Show the first image immediately
+            slides[0].classList.remove('opacity-0');
+            slides[0].classList.add('opacity-50'); 
+            
+            // Change image every 5 seconds
+            setInterval(() => {
+                slides[currentSlide].classList.remove('opacity-50');
+                slides[currentSlide].classList.add('opacity-0');
+                
+                currentSlide = (currentSlide + 1) % slides.length;
+                
+                slides[currentSlide].classList.remove('opacity-0');
+                slides[currentSlide].classList.add('opacity-50');
+            }, 5000); 
+        }
+    });
+</script>
+{% endblock %}

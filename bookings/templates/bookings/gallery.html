@@ -1,0 +1,34 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<div class="bg-white py-24 mt-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-gray-900 mb-4 font-serif">OUR  GALLERY</h1>
+            <p class="text-center text-gray-500 max-w-2xl mx-auto">Explore our rooms, dining, events and unforgettable experiences.</p>
+            <p class="text-center text-gray-500 max-w-2xl mx-auto">YOUR COMFORT, OUR PRIORITY.</p>
+        </div>
+        
+        <!-- CSS Columns for a Masonry Layout -->
+        <div class="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
+            {% for img in images %}
+                <div class="break-inside-avoid relative group rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition duration-300">
+                    <img src="{{ img.image.url }}" alt="{{ img.title }}" class="w-full object-cover group-hover:scale-105 transition duration-700">
+                    
+                    <!-- Hover Overlay -->
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
+                        {% if img.title %}
+                            <span class="text-white opacity-0 group-hover:opacity-100 font-bold text-xl transform translate-y-4 group-hover:translate-y-0 transition duration-300">{{ img.title }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-3 w-full text-center py-20">
+                    <p class="text-gray-500 text-lg">No images uploaded yet.</p>
+                    <p class="text-sm text-gray-400 mt-2">Log into the admin panel and add some Gallery Images.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

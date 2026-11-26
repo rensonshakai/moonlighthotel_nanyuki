@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlight Hotel | Luxury & Comfort</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Lora', serif; }
+        
+        /* Custom styling for Django form inputs */
+        input[type="text"], 
+        input[type="email"], 
+        input[type="password"],
+        input[type="date"], 
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #f9fafb;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-3xl">🌙</span>
+                    <span class="text-2xl font-bold text-blue-900 tracking-tight" style="font-family: 'Lora', serif;">Moonlight Hotel</span>
+                </div>
+                <!-- Auth Links -->
+                <div class="flex items-center gap-6">
+                    {% if user.is_authenticated %}
+                        <!-- Made this a link to the profile page -->
+                        <a href="{% url 'profile' %}" class="text-gray-600 text-sm hover:text-blue-900 transition">
+                            Hello, <strong class="text-gray-900">{{ user.username }}</strong>
+                        </a>
+                        <!-- Django logout requires a POST request for security -->
+                        <form method="POST" action="{% url 'logout' %}" class="m-0 p-0">
+                            {% csrf_token %}
+                            <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800 transition">Logout</button>
+                        </form>
+                        
+                        <!-- ONLY SHOW ADMIN BUTTON IF USER IS STAFF -->
+                        {% if user.is_staff %}
+                            <a href="/admin/" class="text-sm font-medium text-gray-400 hover:text-blue-900 transition ml-4 border-l pl-4 border-gray-300">Admin</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-sm font-medium text-gray-500 hover:text-blue-900 transition">Login</a>
+                        <a href="{% url 'register' %}" class="text-sm bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-800 transition">Sign Up</a>
+                        <a href="/admin/" class="text-sm font-medium text-gray-400 hover:text-blue-900 transition ml-4 border-l pl-4 border-gray-300">Admin</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative h-[500px] flex items-center justify-center bg-blue-900">
+        <img src="https://images.unsplash.com/photo-1542314831-c6a4d1424be7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+             alt="Hotel Lobby" 
+             class="absolute inset-0 w-full h-full object-cover opacity-40">
+        
+        <div class="relative z-10 text-center px-4 mt-16">
+            <h1 class="text-4xl md:text-6xl text-white font-bold mb-4 drop-shadow-lg">Experience Tranquility</h1>
+            <p class="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow">Book your stay at the Moonlight Hotel and enjoy world-class hospitality in the heart of the city.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 relative z-20">
+        
+        <!-- Return to Home Button -->
+        <div class="mb-6">
+            <a href="{% url 'home' %}" class="inline-flex items-center text-blue-900 hover:text-yellow-500 font-semibold transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Success Messages -->
+        {% if messages %}
+            <div class="mb-8">
+                {% for message in messages %}
+                    <div class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded shadow-md flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="flex flex-col lg:flex-row gap-12">
+            
+            <!-- Left Side: Rooms Grid -->
+            <div class="lg:w-2/3">
+                <div class="flex justify-between items-end mb-8 border-b-2 border-gray-200 pb-4">
+                    <h2 class="text-3xl font-bold text-gray-900">Our Rooms</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {% for room in rooms %}
+                        <!-- Wrapped the card in an <a> tag to link to room details -->
+                        <a href="{% url 'room_detail' room.id %}" class="bg-white rounded-xl shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 overflow-hidden group block">
+                            <!-- Room Image Placeholder -->
+                            <div class="h-48 bg-gray-200 overflow-hidden relative">
+                                {% if "Single" in room.get_room_type_display %}
+                                    <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                {% elif "Double" in room.get_room_type_display %}
+                                    <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                {% endif %}
+                                <div class="absolute top-4 right-4">
+                                    {% if room.is_available %}
+                                        <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Available</span>
+                                    {% else %}
+                                        <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Booked</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-2xl font-bold text-gray-900">Room {{ room.room_number }}</h3>
+                                    <p class="text-blue-900 font-bold text-xl">Ksh {{ room.price_per_night }}<span class="text-gray-400 text-sm font-normal">/nt</span></p>
+                                </div>
+                                <p class="text-gray-600 font-medium mb-4">{{ room.get_room_type_display }} Room</p>
+                                <div class="flex items-center text-sm text-gray-500 gap-4 border-t pt-4">
+                                    <span class="flex items-center gap-1">📶 Free WiFi</span>
+                                    <span class="flex items-center gap-1">📺 Smart TV</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% empty %}
+                        <div class="col-span-2 bg-white p-8 text-center rounded-lg shadow-sm">
+                            <p class="text-gray-500">No rooms have been added yet.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Side: Booking Form -->
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 sticky top-28">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Reserve Your Stay</h2>
+                        <p class="text-gray-500 text-sm mt-2">Fill out the form below to secure your room.</p>
+                    </div>
+                    
+                    <form method="POST" class="space-y-5">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <p class="text-red-500 text-xs mt-1 font-medium">{{ field.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <button type="submit" class="w-full bg-blue-900 text-white font-bold py-3.5 px-4 rounded-lg hover:bg-blue-800 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mt-2">
+                            Confirm Reservation
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-12">
+        <p>&copy; 2024 Moonlight Hotel. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
